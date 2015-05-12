@@ -5,8 +5,11 @@
 class supervisord(
   $package_ensure       = $supervisord::params::package_ensure,
   $package_name         = $supervisord::params::package_name,
+  $package_enable       = $supervisord::params::package_enable,
+  $package_manage       = $supervisord::params::package_manage,
   $package_provider     = $supervisord::params::package_provider,
   $service_ensure       = $supervisord::params::service_ensure,
+  $service_manage       = $supervisord::params::service_manage,
   $service_name         = $supervisord::params::service_name,
   $install_init         = $supervisord::params::install_init,
   $install_pip          = false,
@@ -123,7 +126,13 @@ class supervisord(
     Class['supervisord::pip'] -> Class['supervisord::install']
   }
 
-  include supervisord::install, supervisord::config, supervisord::service, supervisord::reload
+  include supervisord::config, supervisord::reload
+  if $package_manage == true {
+    include supervisord::install
+  }
+  if $service_manage == true {
+    include supervisord::service
+  }
 
   Class['supervisord::install'] -> Class['supervisord::config'] ~> Class['supervisord::service']
   Class['supervisord::reload'] -> Supervisord::Supervisorctl <| |>
