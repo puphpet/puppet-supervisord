@@ -11,4 +11,12 @@ class supervisord::service inherits supervisord  {
       hasstatus  => true
     }
   }
+  else {
+    service { $supervisord::service_name:
+      ensure     => stopped,
+      enable     => false,
+      hasrestart => false,
+      hasstatus  => false, 
+    }
+  }
 }
