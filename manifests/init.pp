@@ -126,13 +126,7 @@ class supervisord(
     Class['supervisord::pip'] -> Class['supervisord::install']
   }
 
-  include supervisord::config, supervisord::reload
-  if $package_manage == true {
-    include supervisord::install
-  }
-  if $service_manage == true {
-    include supervisord::service
-  }
+  include supervisord::config, supervisord::reload, supervisord::install, supervisord::service
 
   Class['supervisord::install'] -> Class['supervisord::config'] ~> Class['supervisord::service']
   Class['supervisord::reload'] -> Supervisord::Supervisorctl <| |>
